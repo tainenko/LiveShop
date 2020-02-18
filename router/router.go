@@ -5,5 +5,5 @@ import (
 func InitRouter(){
 	router:=gin.Default()
 	router.GET("/",hello)
-	router.Run(":9525")
+	router.Run(":8080")
 }

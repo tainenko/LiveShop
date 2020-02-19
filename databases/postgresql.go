@@ -14,5 +14,5 @@ func ConnectDB() {
 		log.Fatal(err)
 	}
 	DB=db
-
+	CreateUserTable()
 }

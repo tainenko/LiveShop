@@ -1,9 +1,16 @@
 package main
 
 import (
+	_ "database/sql"
+	"github.com/LiveShop/databases"
 	"github.com/LiveShop/router"
+	_ "github.com/lib/pq"
 )
 
+func init() {
+	databases.Connect()
+}
 func main() {
-	router.InitRouter()
+	r := router.InitRouter()
+	r.Run(":8080")
 }

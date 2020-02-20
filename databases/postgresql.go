@@ -6,10 +6,10 @@ import (
 	"log"
 )
 var DB *sql.DB
-func ConnectDB() {
+func Connect() {
 	// connStr := "postgres://pqgotest:password@localhost/pqgotest?sslmode=verify-full"
-	connStr := "user=pqotest dbname=pqotest sslmode=verify-full"
-	db, err := sql.Open("postgresql", connStr)
+	connStr := "user=pqgotest dbname=postgres sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

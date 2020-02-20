@@ -1,11 +1,11 @@
 package databases
 
 import (
-	"databace/sql"
-	_ "github/lib/pq"
+	"database/sql"
+	_ "github.com/lib/pq"
 	"log"
 )
-var DB *sql.db
+var DB *sql.DB
 func ConnectDB() {
 	// connStr := "postgres://pqgotest:password@localhost/pqgotest?sslmode=verify-full"
 	connStr := "user=pqotest dbname=pqotest sslmode=verify-full"

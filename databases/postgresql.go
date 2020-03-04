@@ -14,10 +14,7 @@ func Connect() {
 		log.Fatal(err)
 	}
 	DB=db
-	createTable()
+	createAllTable()
 }
 
-func createTable(){
-	CreateUserTable()
-	CreateProductTable()
-}
+

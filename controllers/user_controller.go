@@ -3,13 +3,14 @@ package controllers
 import (
 	"fmt"
 	"github.com/LiveShop/databases"
+	"github.com/LiveShop/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
 )
 
 func Register(c *gin.Context){
-	var user databases.RegisterInfo
+	var user models.RegisterInfo
 	c.Bind(&user)
 	fmt.Println(user)
 	validErr:=ValidateUser(user,[]string{})
@@ -22,7 +23,7 @@ func Register(c *gin.Context){
 		c.JSON(http.StatusUnprocessableEntity,gin.H{"success":false,"errors":validErr})
 		return
 	}
-	databases.HashPassword(&user)
+	models.HashPassword(&user)
 	_,err:=databases.DB.Query(databases.CreateUserQuery,user.Name,user.Password,user.Email)
 	if err!=nil{
 		c.Error(err)
@@ -30,7 +31,7 @@ func Register(c *gin.Context){
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created succesfully"})
 }
 
-func isUserExist(user databases.RegisterInfo) bool{
+func isUserExist(user models.RegisterInfo) bool{
 	rows,err:=databases.DB.Query(databases.IsUserExist,user.Email)
 	if err!=nil{
 		return false
@@ -41,7 +42,7 @@ func isUserExist(user databases.RegisterInfo) bool{
 	return true
 }
 
-func ValidateUser(user databases.RegisterInfo,err []string) []string{
+func ValidateUser(user models.RegisterInfo,err []string) []string{
 	const emailRegex = `^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`
 	emailCheck:=regexp.MustCompile(emailRegex).MatchString(user.Email)
 	if emailCheck!=true{

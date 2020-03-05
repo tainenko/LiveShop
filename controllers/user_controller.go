@@ -9,7 +9,7 @@ import (
 	"regexp"
 )
 
-func Register(c *gin.Context){
+func RegisterPost(c *gin.Context){
 	var user models.RegisterInfo
 	c.Bind(&user)
 	fmt.Println(user)

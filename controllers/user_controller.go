@@ -9,11 +9,19 @@ import (
 	"regexp"
 )
 
+func GetUserFromContext(c *gin.Context) (user models.RegisterInfo) {
+	user.Name = c.PostForm("name")
+	user.Email = c.PostForm("email")
+	user.Password = c.PostForm("password")
+	return
+
+}
 func RegisterPost(c *gin.Context) {
-	var user models.RegisterInfo
-	c.Bind(&user)
+	user:=GetUserFromContext(c)
+
+	fmt.Println(user.Name, user.Email)
 	validErr := ValidateUser(user, []string{})
-	exist := isUserExist(user)
+	exist := IsUserExist(user)
 	if exist == true {
 		validErr = append(validErr, "Email already exist!")
 	}
@@ -30,18 +38,17 @@ func RegisterPost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created succesfully"})
 }
 func LoginPost(c *gin.Context) {
-	var user models.RegisterInfo
-	c.Bind(&user)
+	user:=GetUserFromContext(c)
 	models.HashPassword(&user)
 	id := models.QueryUserId(user.Email, user.Password)
-	if id>0{
-		c.JSON(http.StatusOK,gin.H{"code":0,"message":"Login Successful"})
-	}else{
-		c.JSON(http.StatusOK,gin.H{"code":0,"message":"Login Fail."})
+	if id > 0 {
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "Login Successful"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "Login Fail."})
 	}
 }
 
-func isUserExist(user models.RegisterInfo) bool {
+func IsUserExist(user models.RegisterInfo) bool {
 	rows, err := databases.DB.Query(databases.IsUserExist, user.Email)
 	if err != nil {
 		return false

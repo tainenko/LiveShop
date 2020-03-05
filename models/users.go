@@ -3,8 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/LiveShop/databases"
-	"golang.org/x/crypto/bcrypt"
-	"log"
+	"github.com/LiveShop/utils"
 )
 
 type User struct {
@@ -22,21 +21,12 @@ type RegisterInfo struct {
 }
 
 func HashPassword(user *RegisterInfo) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	if err != nil {
-		log.Fatal(err)
-	}
-	user.Password = string(bytes)
+	user.Password = string(utils.MD5(user.Password))
 	fmt.Println(user.Password)
 }
 
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
-
-func QueryUserId(username, password string) int {
-	row := databases.DB.QueryRow(databases.QueryUserWithParam, username, password)
+func QueryUserId(email, password string) int {
+	row := databases.DB.QueryRow(databases.QueryUserWithParam, email, password)
 	id := 0
 	row.Scan(&id)
 	return id

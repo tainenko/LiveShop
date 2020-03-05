@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/LiveShop/databases"
 	"github.com/LiveShop/models"
-	"github.com/LiveShop/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
@@ -13,7 +12,6 @@ import (
 func RegisterPost(c *gin.Context) {
 	var user models.RegisterInfo
 	c.Bind(&user)
-	fmt.Println(user)
 	validErr := ValidateUser(user, []string{})
 	exist := isUserExist(user)
 	if exist == true {
@@ -32,10 +30,10 @@ func RegisterPost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created succesfully"})
 }
 func LoginPost(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-	id := models.QueryUserId(username, utils.MD5(password))
-	fmt.Println("id:",id)
+	var user models.RegisterInfo
+	c.Bind(&user)
+	models.HashPassword(&user)
+	id := models.QueryUserId(user.Email, user.Password)
 	if id>0{
 		c.JSON(http.StatusOK,gin.H{"code":0,"message":"Login Successful"})
 	}else{

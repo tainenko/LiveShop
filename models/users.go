@@ -2,11 +2,10 @@ package models
 
 import (
 	"fmt"
+	"github.com/LiveShop/databases"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 )
-
-
 
 type User struct {
 	Name     string `json:"name"`
@@ -34,4 +33,11 @@ func HashPassword(user *RegisterInfo) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func QueryUserId(username, password string) int {
+	row := databases.DB.QueryRow(databases.QueryUserWithParam, username, password)
+	id := 0
+	row.Scan(&id)
+	return id
 }
